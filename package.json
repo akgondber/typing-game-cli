@@ -1,0 +1,101 @@
+{
+	"name": "typing-game-cli",
+	"description": "Command line game to practice your typing speed",
+	"version": "1.0.0",
+	"homepage": "https://github.com/akgondber/typing-game-cli",
+	"repository": "akgondber/typing-game-cli",
+	"license": "MIT",
+	"bin": {
+		"typing-game-cli": "dist/cli.js",
+		"typing-game": "dist/cli.js",
+		"tgc": "dist/cli.js",
+		"tpngm": "dist/cli.js"
+	},
+	"type": "module",
+	"engines": {
+		"node": ">=16"
+	},
+	"scripts": {
+		"build": "babel --out-dir=dist source --copy-files",
+		"dev": "babel --out-dir=dist --watch source",
+		"test": "prettier --check . && xo && ava",
+		"lint": "xo",
+		"go": "node dist/cli.js",
+		"prettify": "prettier . --write",
+		"xofix": "xo --fix"
+	},
+	"files": [
+		"dist"
+	],
+	"dependencies": {
+		"@inkjs/ui": "^1.0.0",
+		"fdir": "^6.1.1",
+		"ink": "^4.2.0",
+		"ink-gradient": "^3.0.0",
+		"ink-text-input-2": "^1.0.0",
+		"just-compose": "^2.3.0",
+		"just-curry-it": "^5.3.0",
+		"just-filter-object": "^3.2.0",
+		"just-flip": "^2.2.0",
+		"just-partial-it": "^3.4.0",
+		"just-pick": "^4.2.0",
+		"just-random": "^3.2.0",
+		"meow": "^12.0.1",
+		"react": "^18.2.0",
+		"valtio": "^1.13.0"
+	},
+	"devDependencies": {
+		"@babel/cli": "^7.22.5",
+		"@babel/preset-react": "^7.22.5",
+		"ava": "^6.1.1",
+		"chalk": "^5.2.0",
+		"eslint-config-xo-react": "^0.27.0",
+		"eslint-plugin-react": "^7.32.2",
+		"eslint-plugin-react-hooks": "^4.6.0",
+		"import-jsx": "^5.0.0",
+		"ink-testing-library": "^3.0.0",
+		"prettier": "^2.8.8",
+		"xo": "^0.54.2"
+	},
+	"ava": {
+		"environmentVariables": {
+			"NODE_NO_WARNINGS": "1"
+		},
+		"nodeArguments": [
+			"--loader=import-jsx"
+		]
+	},
+	"xo": {
+		"extends": "xo-react",
+		"prettier": true,
+		"rules": {
+			"react/prop-types": "off"
+		}
+	},
+	"prettier": {
+		"useTabs": true,
+		"semi": true,
+		"singleQuote": true,
+		"quoteProps": "as-needed",
+		"bracketSpacing": false,
+		"arrowParens": "avoid",
+		"trailingComma": "all"
+	},
+	"babel": {
+		"presets": [
+			"@babel/preset-react"
+		]
+	},
+	"keywords": [
+		"challenge",
+		"cli",
+		"fun",
+		"game",
+		"keyboard",
+		"productivity",
+		"robot",
+		"speed",
+		"typer",
+		"typing"
+	]
+}

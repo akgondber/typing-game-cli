@@ -1,0 +1,32 @@
+{
+	"2024-02-05": [
+		{
+			"name": "just-flip",
+			"message": "Still using just-flip?",
+			"command": "npm uninstall just-flip --save",
+			"operation": "delete",
+			"info": "To remove this package: npm uninstall just-flip --save"
+		},
+		{
+			"name": "just-partial-it",
+			"message": "Still using just-partial-it?",
+			"command": "npm uninstall just-partial-it --save",
+			"operation": "delete",
+			"info": "To remove this package: npm uninstall just-partial-it --save"
+		},
+		{
+			"name": "just-curry-it",
+			"message": "Still using just-curry-it?",
+			"command": "npm uninstall just-curry-it --save",
+			"operation": "delete",
+			"info": "To remove this package: npm uninstall just-curry-it --save"
+		},
+		{
+			"name": "ava",
+			"message": "Major update available. https://avajs.dev",
+			"command": "npm install ava@6.1.1 --save-dev",
+			"operation": "update",
+			"info": "npm install ava@6.1.1 --save-dev to go from 5.3.1 to 6.1.1"
+		}
+	]
+}
