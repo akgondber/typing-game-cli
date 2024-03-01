@@ -2,6 +2,7 @@ import React from 'react';
 import {Text, Box, useInput, useStdout} from 'ink';
 import TextInput from 'ink-text-input-2';
 import {Spinner, Alert} from '@inkjs/ui';
+import chalk from 'chalk';
 import Gradient from 'ink-gradient';
 import {proxy, useSnapshot} from 'valtio';
 import random from 'just-random';
@@ -20,6 +21,11 @@ const state = proxy({
 	status: 'PAUSED',
 	suite: getDefaultSuite(),
 	source: null,
+	firstPart: '',
+	highlightedPart: '',
+	erroredPart: '',
+	highlighingColor: 'green',
+	lastPart: '',
 	robotText: '',
 	userText: '',
 	intervalId: null,
@@ -37,6 +43,10 @@ export default function App({robotLevel}) {
 				state.robotText = '';
 				state.status = 'RUNNING';
 				state.source = random(state.suite.sentences);
+				state.firstPart = '';
+				state.highlightedPart = '';
+				state.erroredPart = '';
+				state.lastPart = state.source;
 				state.level = robotLevel || 'medium';
 				const interval = setInterval(() => {
 					state.robotText += state.source.slice(
@@ -98,12 +108,11 @@ export default function App({robotLevel}) {
 						flexDirection="column"
 						alignItems="center"
 						justifyContent="center"
+						paddingBottom={1}
 					>
-						<Box>
-							<Alert variant={getStatusVariant(snap.status)}>
-								{getMessage(snap.status)}
-							</Alert>
-						</Box>
+						<Alert variant={getStatusVariant(snap.status)}>
+							{getMessage(snap.status)}
+						</Alert>
 					</Box>
 				</Box>
 			) : (
@@ -114,8 +123,18 @@ export default function App({robotLevel}) {
 					</Box>
 				</Box>
 			)}
-			<Box paddingBottom={1}>
-				<Text>{snap.source}</Text>
+			<Box
+				height={3}
+				alignItems="center"
+				paddingBottom={1}
+				paddingX={2}
+				flexDirection="row"
+			>
+				<Text>
+					{chalk.bgGreen(snap.firstPart)}
+					{snap.erroredPart && chalk.bgRed(snap.erroredPart)}
+					{snap.lastPart}
+				</Text>
 			</Box>
 			<Box alignItems="center" justifyContent="center">
 				<Box
@@ -129,7 +148,19 @@ export default function App({robotLevel}) {
 						<TextInput
 							value={snap.userText}
 							onChange={value => {
-								state.userText = value;
+								if (snap.source.indexOf(value) === 0) {
+									state.firstPart = value;
+									state.erroredPart = '';
+									state.lastPart = snap.source.slice(value.length);
+									state.userText = value;
+								} else {
+									state.firstPart = snap.userText;
+									state.erroredPart = snap.source.slice(
+										value.length - 1,
+										value.length,
+									);
+									state.lastPart = snap.source.slice(value.length);
+								}
 							}}
 						/>
 					)}
