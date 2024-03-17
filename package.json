@@ -1,7 +1,7 @@
 {
 	"name": "typing-game-cli",
-	"description": "Command line game to practice your typing speed",
-	"version": "2.0.0",
+	"description": "Command line game to practice your typing speed by competing against typer-robot",
+	"version": "3.0.0",
 	"homepage": "https://github.com/akgondber/typing-game-cli",
 	"repository": "akgondber/typing-game-cli",
 	"license": "MIT",
@@ -30,25 +30,25 @@
 	"dependencies": {
 		"@inkjs/ui": "^1.0.0",
 		"chalk": "^5.3.0",
+		"date-fns": "^3.5.0",
 		"fdir": "^6.1.1",
 		"ink": "^4.2.0",
 		"ink-gradient": "^3.0.0",
 		"ink-text-input-2": "^1.0.0",
 		"just-compose": "^2.3.0",
-		"just-curry-it": "^5.3.0",
 		"just-filter-object": "^3.2.0",
-		"just-flip": "^2.2.0",
-		"just-partial-it": "^3.4.0",
 		"just-pick": "^4.2.0",
 		"just-random": "^3.2.0",
+		"just-sort-by": "^3.2.0",
 		"meow": "^12.0.1",
+		"nanoid": "^5.0.6",
 		"react": "^18.2.0",
 		"valtio": "^1.13.1"
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.22.5",
 		"@babel/preset-react": "^7.22.5",
-		"ava": "^6.1.1",
+		"ava": "^6.1.2",
 		"eslint-config-xo-react": "^0.27.0",
 		"eslint-plugin-react": "^7.32.2",
 		"eslint-plugin-react-hooks": "^4.6.0",
@@ -69,7 +69,8 @@
 		"extends": "xo-react",
 		"prettier": true,
 		"rules": {
-			"react/prop-types": "off"
+			"react/prop-types": "off",
+			"unicorn/filename-case": "off"
 		}
 	},
 	"prettier": {

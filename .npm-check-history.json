@@ -79,5 +79,63 @@
 			"operation": "update",
 			"info": "npm install xo@0.57.0 --save-dev to go from 0.54.2 to 0.57.0"
 		}
+	],
+	"2024-03-17": [
+		{
+			"name": "just-curry-it",
+			"message": "Still using just-curry-it?",
+			"command": "npm uninstall just-curry-it --save",
+			"operation": "delete",
+			"info": "To remove this package: npm uninstall just-curry-it --save"
+		},
+		{
+			"name": "just-flip",
+			"message": "Still using just-flip?",
+			"command": "npm uninstall just-flip --save",
+			"operation": "delete",
+			"info": "To remove this package: npm uninstall just-flip --save"
+		},
+		{
+			"name": "just-partial-it",
+			"message": "Still using just-partial-it?",
+			"command": "npm uninstall just-partial-it --save",
+			"operation": "delete",
+			"info": "To remove this package: npm uninstall just-partial-it --save"
+		},
+		{
+			"name": "valtio",
+			"message": "Your local install is out of date. https://github.com/pmndrs/valtio",
+			"command": "npm install valtio@1.13.2 --save",
+			"operation": "update",
+			"info": "npm install valtio@1.13.2 --save to go from 1.13.1 to 1.13.2"
+		},
+		{
+			"name": "ava",
+			"message": "Your local install is out of date. https://avajs.dev",
+			"command": "npm install ava@6.1.2 --save-dev",
+			"operation": "update",
+			"info": "npm install ava@6.1.2 --save-dev to go from 6.1.1 to 6.1.2"
+		},
+		{
+			"name": "just-flip",
+			"message": "Still using just-flip?",
+			"command": "npm uninstall just-flip --save",
+			"operation": "delete",
+			"info": "To remove this package: npm uninstall just-flip --save"
+		},
+		{
+			"name": "just-curry-it",
+			"message": "Still using just-curry-it?",
+			"command": "npm uninstall just-curry-it --save",
+			"operation": "delete",
+			"info": "To remove this package: npm uninstall just-curry-it --save"
+		},
+		{
+			"name": "date-fns",
+			"message": "Your local install is out of date. https://github.com/date-fns/date-fns#readme",
+			"command": "npm install date-fns@3.5.0 --save",
+			"operation": "update",
+			"info": "npm install date-fns@3.5.0 --save to go from 3.3.1 to 3.5.0"
+		}
 	]
 }

@@ -1,3 +1,3 @@
-const optionKeyColor = '#B85042';
+const optionKeyColor = 'cyan';
 
 export {optionKeyColor};

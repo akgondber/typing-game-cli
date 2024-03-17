@@ -13,15 +13,26 @@ const cli = meow(
 		  $ typing-game-cli
 
 		Options
-			--fast   Start a round with a robot having high typing speed.
-			--medium Start a round with a robot having medium typing speed.
-			--low    Start a round with a robot having low typing speed.
+			--fast            Start a round with a robot having high typing speed.
+			--extra-fast      Start a round with a robot having high typing speed.
+			--medium          Start a round with a robot having medium typing speed.
+			--low             Start a round with a robot having low typing speed.
+			--display-results Show wpm results
+			--sort-by         Sort wpm results by specified value (-wpm, wpm, -date, date), Starting "-" indicates descending order, default is "-date"
+
 
 		Examples
 		  $ typing-game-cli
 		  $ typing-game-cli --fast
+		  $ typing-game-cli -f
+		  $ typing-game-cli --extra-fast
 		  $ typing-game-cli --medium
+		  $ typing-game-cli -m
 		  $ typing-game-cli --low
+		  $ typing-game-cli --display-results
+		  $ typing-game-cli -r
+		  $ typing-game-cli -r --sort-by="-wpm"
+		  $ typing-game-cli -r -s="wpm"
 	`,
 	{
 		importMeta: import.meta,
@@ -29,6 +40,10 @@ const cli = meow(
 			fast: {
 				type: 'boolean',
 				shortFlag: 'f',
+			},
+			extraFast: {
+				type: 'boolean',
+				shortFlag: 'e',
 			},
 			medium: {
 				type: 'boolean',
@@ -38,14 +53,31 @@ const cli = meow(
 				type: 'boolean',
 				shortFlag: 'l',
 			},
+			displayResults: {
+				type: 'boolean',
+				shortFlag: 'r',
+				default: false,
+			},
+			sortBy: {
+				type: 'string',
+				shortFlag: 's',
+				default: '-date',
+			},
 		},
 	},
 );
 
 const robotLevel = compose(
-	flags => pick(flags, ['fast', 'medium', 'low']),
+	flags => pick(flags, ['extraFast', 'fast', 'medium', 'low']),
 	flags => filter(flags, (_, value) => value),
 	flags => Object.keys(flags)[0] || 'medium',
 )(cli.flags);
+const {displayResults, sortBy} = cli.flags;
 
-render(<App robotLevel={robotLevel} />);
+render(
+	<App
+		robotLevel={robotLevel}
+		displayResults={displayResults}
+		sortBy={sortBy}
+	/>,
+);
