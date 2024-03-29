@@ -19,12 +19,13 @@ $ typing-game-cli --help
     $ typing-game-cli
 
   Options
-        --fast            Start a round with a robot having high typing speed.
-        --extra-fast      Start a round with a robot having high typing speed.
-        --medium          Start a round with a robot having medium typing speed.
-        --low             Start a round with a robot having low typing speed.
-        --display-results Show wpm results
-        --sort-by         Sort wpm results by specified value (-wpm, wpm, -date, date), Starting "-" indicates descending order, default is "-date"
+    --fast            Start a round with a robot having high typing speed.
+    --extra-fast      Start a round with a robot having high typing speed.
+    --medium          Start a round with a robot having medium typing speed.
+    --low             Start a round with a robot having low typing speed.
+    --display-results Show wpm results
+    --sort-by         Sort wpm results by specified value (-wpm, wpm, -date, date), Starting "-" indicates descending order, default is "-date"
+    --all-hostory     Show all history when displaying results (otherwise (default) display last 10 results respecting sorting parameter)
 
 
   Examples
@@ -39,6 +40,8 @@ $ typing-game-cli --help
     $ typing-game-cli -r
     $ typing-game-cli -r --sort-by="-wpm"
     $ typing-game-cli -r -s="wpm"
+    $ typing-game-cli -r -s="-wpm" --all-history
+    $ typing-game-cli -r -s="-wpm" -a
 ```
 
 ## Demo

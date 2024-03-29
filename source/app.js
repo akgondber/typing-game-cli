@@ -1,5 +1,5 @@
 import React, {useLayoutEffect} from 'react';
-import {Text, Box, useInput, useStdout} from 'ink';
+import {Text, Box, useInput, useStdout, useApp} from 'ink';
 import TextInput from 'ink-text-input-2';
 import {Spinner, Alert} from '@inkjs/ui';
 import chalk from 'chalk';
@@ -25,6 +25,7 @@ import {optionKeyColor} from './constants.js';
 import Results from './Results.js';
 import {config} from './config.js';
 import Menu from './Menu.js';
+import {exitNow} from './cli.js';
 
 const currentTime = () => Date.now();
 
@@ -50,9 +51,15 @@ const state = proxy({
 	robotWpm: 0,
 });
 
-export default function App({robotLevel, displayResults = false, sortBy}) {
+export default function App({
+	robotLevel,
+	displayResults = false,
+	sortBy,
+	isShowAllHistory,
+}) {
 	const snap = useSnapshot(state);
 	const {stdout} = useStdout();
+	const {exit} = useApp();
 
 	useLayoutEffect(() => {
 		if (displayResults) {
@@ -120,6 +127,9 @@ export default function App({robotLevel, displayResults = false, sortBy}) {
 				state.intervalId = interval;
 			} else if (input === 'r') {
 				state.status = 'RESULTS';
+			} else if (input === 'q') {
+				exit();
+				exitNow();
 			}
 		},
 		{isActive: state.status !== 'RUNNING'},
@@ -135,7 +145,7 @@ export default function App({robotLevel, displayResults = false, sortBy}) {
 	);
 
 	if (snap.status === 'RESULTS') {
-		return <Results sortBy={sortBy} />;
+		return <Results sortBy={sortBy} isShowAllHistory={isShowAllHistory} />;
 	}
 
 	return snap.status === 'PAUSED' ? (
@@ -166,6 +176,13 @@ export default function App({robotLevel, displayResults = false, sortBy}) {
 							r
 						</Text>{' '}
 						to show your wpm statistics.
+					</Text>
+					<Text>
+						Press{' '}
+						<Text bold color={optionKeyColor}>
+							q
+						</Text>{' '}
+						to quit.
 					</Text>
 				</Box>
 			</Box>

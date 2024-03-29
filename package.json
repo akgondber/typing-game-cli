@@ -1,7 +1,7 @@
 {
 	"name": "typing-game-cli",
 	"description": "Command line game to practice your typing speed by competing against typer-robot",
-	"version": "3.0.0",
+	"version": "3.0.1",
 	"homepage": "https://github.com/akgondber/typing-game-cli",
 	"repository": "akgondber/typing-game-cli",
 	"license": "MIT",
@@ -70,7 +70,8 @@
 		"prettier": true,
 		"rules": {
 			"react/prop-types": "off",
-			"unicorn/filename-case": "off"
+			"unicorn/filename-case": "off",
+			"unicorn/prefer-switch": "off"
 		}
 	},
 	"prettier": {

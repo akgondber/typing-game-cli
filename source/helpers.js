@@ -104,7 +104,7 @@ const getRemainingPart = (source, typed, hasErroredPart = false) => {
 	return source.slice(typed.length + increment);
 };
 
-const getResults = ({sortBy: sortByValue = '-wpm'}) => {
+const getResults = ({sortBy: sortByValue = '-wpm', showAll = false}) => {
 	const config = new Config();
 	const data = config.get();
 
@@ -127,6 +127,10 @@ const getResults = ({sortBy: sortByValue = '-wpm'}) => {
 
 		return -parseISO(item.date);
 	});
+
+	if (!showAll) {
+		return result.slice(0, 10);
+	}
 
 	return result;
 };

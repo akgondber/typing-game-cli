@@ -19,6 +19,12 @@ export default function Menu() {
 					</Text>{' '}
 					- display results
 				</Text>
+				<Text>
+					<Text bold color={optionKeyColor}>
+						q
+					</Text>{' '}
+					- quit
+				</Text>
 			</Box>
 		</Box>
 	);
