@@ -6,9 +6,20 @@ test('returns appropriate variant', t => {
 	t.is(helpers.getStatusVariant('LOST'), 'error');
 });
 
-test('returns appropriate message', t => {
-	t.is(helpers.getMessage('WON'), 'You won!');
-	t.is(helpers.getMessage('LOST'), 'Robot won!');
+test('returns appropriate message when competing against best result', t => {
+	t.is(
+		helpers.getMessage('WON', {againstMyself: true}),
+		'You have surpassed your best score!',
+	);
+	t.is(
+		helpers.getMessage('LOST', {againstMyself: true}),
+		'You were unable to beat your best result.',
+	);
+});
+
+test('returns appropriate message when competing against robot', t => {
+	t.is(helpers.getMessage('WON', {againstMyself: false}), 'You won!');
+	t.is(helpers.getMessage('LOST', {againstMyself: false}), 'Robot won!');
 });
 
 test('returns appropriate intervalMs', t => {

@@ -35,6 +35,10 @@ export default class Config {
 
 		fs.writeFileSync(this._configFile, data, 'utf8');
 	}
+
+	clearAll() {
+		fs.writeFileSync(this._configFile, '{}', 'utf8');
+	}
 }
 
 export const config = new Config();
