@@ -1,9 +1,10 @@
 {
 	"name": "typing-game-cli",
-	"description": "Command line game to practice your typing speed by competing against typer-robot",
-	"version": "3.0.1",
+	"description": "Command line game to practice your typing speed by competing against typer-robot or against your best result",
+	"version": "4.0.0",
 	"homepage": "https://github.com/akgondber/typing-game-cli",
 	"repository": "akgondber/typing-game-cli",
+	"author": "Rushan Alyautdinov <akgondber@gmail.com>",
 	"license": "MIT",
 	"bin": {
 		"typing-game-cli": "dist/cli.js",
@@ -19,10 +20,12 @@
 		"build": "babel --out-dir=dist source --copy-files",
 		"dev": "babel --out-dir=dist --watch source",
 		"test": "prettier --check . && xo && ava",
+		"justtest": "ava --serial",
 		"lint": "xo",
 		"go": "node dist/cli.js",
 		"prettify": "prettier . --write",
-		"xofix": "xo --fix"
+		"xofix": "xo --fix",
+		"pretcheck": "prettier --check ."
 	},
 	"files": [
 		"dist"
@@ -30,7 +33,7 @@
 	"dependencies": {
 		"@inkjs/ui": "^1.0.0",
 		"chalk": "^5.3.0",
-		"date-fns": "^3.5.0",
+		"date-fns": "^3.6.0",
 		"fdir": "^6.1.1",
 		"ink": "^4.2.0",
 		"ink-gradient": "^3.0.0",
@@ -40,7 +43,7 @@
 		"just-pick": "^4.2.0",
 		"just-random": "^3.2.0",
 		"just-sort-by": "^3.2.0",
-		"meow": "^12.0.1",
+		"meow": "^13.2.0",
 		"nanoid": "^5.0.6",
 		"react": "^18.2.0",
 		"valtio": "^1.13.1"
@@ -50,12 +53,12 @@
 		"@babel/preset-react": "^7.22.5",
 		"ava": "^6.1.2",
 		"eslint-config-xo-react": "^0.27.0",
-		"eslint-plugin-react": "^7.32.2",
+		"eslint-plugin-react": "^7.34.1",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"import-jsx": "^5.0.0",
 		"ink-testing-library": "^3.0.0",
-		"prettier": "^2.8.8",
-		"xo": "^0.57.0"
+		"prettier": "^3.2.5",
+		"xo": "^0.58.0"
 	},
 	"ava": {
 		"environmentVariables": {
@@ -98,6 +101,11 @@
 		"robot",
 		"speed",
 		"typer",
-		"typing"
+		"typing",
+		"competition",
+		"typingpracrice",
+		"bestresult",
+		"terminalgame",
+		"cligame"
 	]
 }

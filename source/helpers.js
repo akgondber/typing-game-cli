@@ -4,8 +4,9 @@ import {fileURLToPath} from 'node:url';
 import {fdir as Fdir} from 'fdir';
 import random from 'just-random';
 import sortBy from 'just-sort-by';
-import {parseISO} from 'date-fns';
+import {formatISO, isValid, parseISO} from 'date-fns';
 import Config from './config.js';
+import {frames} from './robotFrames.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -39,11 +40,31 @@ const getWpmTextColor = (wpm, otherWpm) => {
 	return 'gray';
 };
 
-const getMessage = status => {
+const getScoreTextColor = (score, otherScore) => {
+	if (score > otherScore) return 'green';
+	if (otherScore > score) return 'red';
+	return 'gray';
+};
+
+const getMessage = (status, {againstMyself = false}) => {
+	if (againstMyself) {
+		if (isWon(status)) return 'You have surpassed your best score!';
+		if (isLost(status)) return 'You were unable to beat your best result.';
+		return 'Your current score is equivalent to your best score.';
+	}
+
 	if (isWon(status)) return 'You won!';
 	if (isLost(status)) return 'Robot won!';
 
-	return '';
+	return 'Tie.';
+};
+
+const getMessageOrPlaceholder = (
+	status,
+	{againstMyself = false, asPlaceholder = false},
+) => {
+	const message = getMessage(status, {againstMyself});
+	return asPlaceholder ? message.replaceAll(/./g, ' ') : message;
 };
 
 const getBorderColor = status => {
@@ -67,6 +88,10 @@ const getIntervalMs = level => {
 	}[level];
 };
 
+const getWordCount = sentence => {
+	return sentence.split(' ').filter(Boolean).length;
+};
+
 const isFinished = status => [won, lost].includes(status);
 const isWordTyped = (source, outgoing) =>
 	source.length === outgoing.length ||
@@ -77,6 +102,24 @@ const calculateWPM = (wordCount, startTime, finishTime, finished = false) => {
 	return finished || durInMinutes > 1
 		? Math.round(wordCount / durInMinutes)
 		: wordCount;
+};
+
+const calculateCPS = (charCount, startTime, finishTime) => {
+	const durInSeconds = (finishTime - startTime) / 1000;
+
+	return durInSeconds > 1 ? Math.round(charCount / durInSeconds) : charCount;
+};
+
+const calculateCPM = (charCount, startTime, finishTime) => {
+	const durInMinutes = (finishTime - startTime) / 60_000;
+
+	return durInMinutes >= 1 ? Math.round(charCount / durInMinutes) : charCount;
+};
+
+const getCompetitionResult = (userText, robotText) => {
+	if (userText.length > robotText.length) return 'WON';
+	if (userText.length < robotText.length) return 'LOST';
+	return 'TIE';
 };
 
 const getTypingWord = (source, typed, hasErroredPart) => {
@@ -110,15 +153,25 @@ const getResults = ({sortBy: sortByValue = '-wpm', showAll = false}) => {
 
 	// eslint-disable-next-line unicorn/no-array-reduce
 	const statistics = Object.keys(data).reduce((memo, item) => {
-		return [...memo, {date: item, value: data[item]}];
+		return isValid(parseISO(item)) && data[item].passedSeconds >= 60
+			? [...memo, {date: item, value: data[item]}]
+			: memo;
 	}, []);
 	const result = sortBy(statistics, item => {
+		if (sortByValue === 'cpm') {
+			return item.value.cpm;
+		}
+
+		if (sortByValue === '-cpm') {
+			return -item.value.cpm;
+		}
+
 		if (sortByValue === 'wpm') {
-			return item.value;
+			return item.value.wpm;
 		}
 
 		if (sortByValue === '-wpm') {
-			return -item.value;
+			return -item.value.wpm;
 		}
 
 		if (sortByValue === 'date') {
@@ -135,27 +188,91 @@ const getResults = ({sortBy: sortByValue = '-wpm', showAll = false}) => {
 	return result;
 };
 
+const getBestResult = () => {
+	const config = new Config();
+	const data = config.get();
+
+	// eslint-disable-next-line unicorn/no-array-reduce
+	const statistics = Object.keys(data).reduce((memo, item) => {
+		return isValid(parseISO(item))
+			? [...memo, {date: item, value: data[item]}]
+			: memo;
+	}, []);
+	const targetItems = statistics.filter(item => item.value.passedSeconds >= 60);
+
+	if (targetItems.length === 0) return null;
+	return sortBy(targetItems, item => -item.value.cpm)[0];
+};
+
+const getResultByWordCount = ({wordCount}) => {
+	const sortedByWpmResults = getResults({sortBy: '-wpm', showAll: true});
+	return sortedByWpmResults.find(result => result.wordCount === wordCount);
+};
+
+const getBestWpmResult = () => {
+	return getResults({sortBy: '-wpm'})[0];
+};
+
+const getBestFrames = () => {
+	const config = new Config();
+	const data = config.get();
+
+	return data.bestFrames;
+};
+
+const getOpponentFrames = ({
+	usingBestResult = false,
+	robotLevel = 'medium',
+}) => {
+	if (usingBestResult) {
+		return getBestFrames();
+	}
+
+	return frames[robotLevel];
+};
+
 const getSortedByString = value => {
 	if (value.startsWith('-')) {
-		return `${value.slice(1)} desc`;
+		return `${value.slice(1)} (desc)`;
 	}
 
 	return value;
+};
+
+const registerResult = (config, date, resultObject) => {
+	config.addEntry({[formatISO(date)]: resultObject});
+};
+
+const registerBestFrames = (config, frames) => {
+	config.addEntry({bestFrames: frames});
 };
 
 export {
 	getDefaultSuite,
 	getStatusVariant,
 	getWpmTextColor,
+	getScoreTextColor,
 	getMessage,
+	getMessageOrPlaceholder,
 	getBorderColor,
 	getRobotBorderColor,
 	getIntervalMs,
 	isFinished,
 	isWordTyped,
 	calculateWPM,
+	calculateCPS,
+	calculateCPM,
+	getCompetitionResult,
 	getTypingWord,
 	getRemainingPart,
 	getResults,
+	getBestResult,
+	getBestFrames,
+	getOpponentFrames,
+	getResultByWordCount,
+	getBestWpmResult,
 	getSortedByString,
+	getWordCount,
+	registerResult,
+	registerBestFrames,
 };

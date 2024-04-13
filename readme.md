@@ -1,6 +1,6 @@
 # typing-game-cli [![NPM version][npm-image]][npm-url]
 
-> Command line game to practice your typing speed by competing against typer-robot.
+> Command line game to practice your typing speed by competing against typer-robot or against your best result.
 
 ## Install
 
@@ -11,21 +11,36 @@ $ npm install --global typing-game-cli
 ## CLI
 
 ```
-$ typing-game-cli --help
-
-  Command line game to practice your typing speed by competing against typer-robot
+  Command line game to practice your typing speed by competing against typer-robot or against your best result
 
   Usage
     $ typing-game-cli
 
+  Shorthand command aliases:
+    $ typing-game
+    $ tpngm
+    $ tgc
+
   Options
+    --against-my-best Play against your best result (available after you have competed against a robot at least once)
     --fast            Start a round with a robot having high typing speed.
-    --extra-fast      Start a round with a robot having high typing speed.
+    --extra-fast      Start a round with a robot having extra high typing speed.
     --medium          Start a round with a robot having medium typing speed.
     --low             Start a round with a robot having low typing speed.
-    --display-results Show wpm results
-    --sort-by         Sort wpm results by specified value (-wpm, wpm, -date, date), Starting "-" indicates descending order, default is "-date"
+    --display-results Show cpm and wpm results
+    --sort-by         Sort results by specified value (-cpm, cpm, -wpm, wpm, -date, date), Starting "-" indicates descending order, default is "-date"
     --all-hostory     Show all history when displaying results (otherwise (default) display last 10 results respecting sorting parameter)
+
+  Short flags and aliases for options:
+    --against-my-best:  -b, --best, --my-best, --myself, --against-my-best-result
+    --fast:             -f
+    --extra-fast:       -e
+    --medium:           -m
+    --low:              -l
+    --display-results:  -r
+    --sort-by           -s
+    --show-all-history: -a, --all, --all-history
+    --clear-results:    -c, --clear
 
 
   Examples
@@ -50,7 +65,31 @@ $ typing-game-cli --help
 
 ## Screenshots
 
-![](media/screenshot-1.png)
+### Competition agains fast robot
+
+```
+$ typing-game-cli --fast
+```
+
+![](media/competition-against-fast-robot.png)
+
+### Competition agains best result
+
+```
+$ typing-game-cli --my-best
+# There are available the following aliases:
+$ typing-game-cli --myself
+$ typing-game-cli -b
+$ tgc -b
+```
+
+#### Example - Running game
+
+![](media/competition-against-best-result.png)
+
+#### Example - Game over
+
+![](media/competition-against-best-result-2.png)
 
 ## License
 

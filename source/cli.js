@@ -6,20 +6,38 @@ import pick from 'just-pick';
 import compose from 'just-compose';
 import filter from 'just-filter-object';
 import App from './app.js';
+import {config} from './config.js';
 
 const cli = meow(
 	`
 		Usage
 		  $ typing-game-cli
+		
+		Shorthand command aliases:
+		  $ typing-game
+		  $ tpngm
+		  $ tgc
 
 		Options
-			--fast            Start a round with a robot having high typing speed.
-			--extra-fast      Start a round with a robot having high typing speed.
-			--medium          Start a round with a robot having medium typing speed.
-			--low             Start a round with a robot having low typing speed.
-			--display-results Show wpm results
-			--sort-by         Sort wpm results by specified value (-wpm, wpm, -date, date), Starting "-" indicates descending order, default is "-date"
-			--all-hostory     Show all history when displaying results (otherwise (default) display last 10 results respecting sorting parameter)
+		  --against-my-best Play against your best result (available after you have competed against a robot at least once)
+		  --fast            Start a round with a robot having high typing speed.
+		  --extra-fast      Start a round with a robot having extra high typing speed.
+		  --medium          Start a round with a robot having medium typing speed.
+		  --low             Start a round with a robot having low typing speed.
+		  --display-results Show cpm and wpm results
+		  --sort-by         Sort results by specified value (-cpm, cpm, -wpm, wpm, -date, date), Starting "-" indicates descending order, default is "-date"
+		  --all-hostory     Show all history when displaying results (otherwise (default) display last 10 results respecting sorting parameter)
+
+		Short flags and aliases for options:
+		  --against-my-best:  -b, --best, --my-best, --myself, --against-my-best-result
+		  --fast:             -f
+		  --extra-fast:       -e
+		  --medium:           -m
+		  --low:              -l
+		  --display-results:  -r
+		  --sort-by           -s
+		  --show-all-history: -a, --all, --all-history
+		  --clear-results:    -c, --clear
 
 
 		Examples
@@ -46,6 +64,7 @@ const cli = meow(
 			},
 			extraFast: {
 				type: 'boolean',
+				aliases: ['superFast'],
 				shortFlag: 'e',
 			},
 			medium: {
@@ -72,16 +91,35 @@ const cli = meow(
 				aliases: ['allHistory', 'all'],
 				default: false,
 			},
+			clearResults: {
+				type: 'boolean',
+				shortFlag: 'c',
+				aliases: ['clear'],
+				default: false,
+			},
+			againstMyBest: {
+				type: 'boolean',
+				shortFlag: 'b',
+				aliases: ['best', 'myBest', 'myself', 'againstMyBestResult'],
+				default: false,
+			},
 		},
 	},
 );
+
+const exitNow = () => process.exit(); // eslint-disable-line n/prefer-global/process
+
+if (cli.flags.clearResults) {
+	config.clearAll();
+	exitNow();
+}
 
 const robotLevel = compose(
 	flags => pick(flags, ['extraFast', 'fast', 'medium', 'low']),
 	flags => filter(flags, (_, value) => value),
 	flags => Object.keys(flags)[0] || 'medium',
 )(cli.flags);
-const {displayResults, sortBy, showAllHistory} = cli.flags;
+const {displayResults, sortBy, showAllHistory, againstMyBest} = cli.flags;
 
 render(
 	<App
@@ -89,9 +127,8 @@ render(
 		displayResults={displayResults}
 		sortBy={sortBy}
 		isShowAllHistory={showAllHistory}
+		isCompetingAgainstBestResult={againstMyBest}
 	/>,
 );
-
-const exitNow = () => process.exit(); // eslint-disable-line n/prefer-global/process
 
 export {exitNow};
