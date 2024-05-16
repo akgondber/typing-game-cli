@@ -1,6 +1,6 @@
 # typing-game-cli [![NPM version][npm-image]][npm-url]
 
-> Command line game to practice your typing speed by competing against typer-robot or against your best result.
+> Command-line game to practice your typing speed by competing against typer-robot or against your best result.
 
 ## Install
 
@@ -29,7 +29,7 @@ $ npm install --global typing-game-cli
     --low             Start a round with a robot having low typing speed.
     --display-results Show cpm and wpm results
     --sort-by         Sort results by specified value (-cpm, cpm, -wpm, wpm, -date, date), Starting "-" indicates descending order, default is "-date"
-    --all-hostory     Show all history when displaying results (otherwise (default) display last 10 results respecting sorting parameter)
+    --all-history     Show all history when displaying results (otherwise (default) display last 10 results respecting sorting parameter)
 
   Short flags and aliases for options:
     --against-my-best:  -b, --best, --my-best, --myself, --against-my-best-result
@@ -65,7 +65,7 @@ $ npm install --global typing-game-cli
 
 ## Screenshots
 
-### Competition agains fast robot
+### Competition against fast robot
 
 ```
 $ typing-game-cli --fast
@@ -73,7 +73,7 @@ $ typing-game-cli --fast
 
 ![](media/competition-against-fast-robot.png)
 
-### Competition agains best result
+### Competition against best result
 
 ```
 $ typing-game-cli --my-best
