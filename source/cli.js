@@ -26,7 +26,7 @@ const cli = meow(
 		  --low             Start a round with a robot having low typing speed.
 		  --display-results Show cpm and wpm results
 		  --sort-by         Sort results by specified value (-cpm, cpm, -wpm, wpm, -date, date), Starting "-" indicates descending order, default is "-date"
-		  --all-hostory     Show all history when displaying results (otherwise (default) display last 10 results respecting sorting parameter)
+		  --all-history     Show all history when displaying results (otherwise (default) display last 10 results respecting sorting parameter)
 
 		Short flags and aliases for options:
 		  --against-my-best:  -b, --best, --my-best, --myself, --against-my-best-result

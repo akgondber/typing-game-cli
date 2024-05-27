@@ -44,7 +44,7 @@ const state = proxy({
 	firstPart: '',
 	highlightedPart: '',
 	erroredPart: '',
-	highlighingColor: 'green',
+	highlightingColor: 'green',
 	showOkCancelQuestion: false,
 	gameOver: false,
 	okCancelMessage: '',
