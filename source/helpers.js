@@ -4,7 +4,7 @@ import {fileURLToPath} from 'node:url';
 import {fdir as Fdir} from 'fdir';
 import random from 'just-random';
 import sortBy from 'just-sort-by';
-import {formatISO, isValid, parseISO} from 'date-fns';
+import {format, formatISO, isValid, parseISO} from 'date-fns';
 import Config from './config.js';
 import {frames} from './robotFrames.js';
 
@@ -204,6 +204,15 @@ const getBestResult = () => {
 	return sortBy(targetItems, item => -item.value.cpm)[0];
 };
 
+const getBestResultCompactString = () => {
+	const result = getBestResult();
+	if (!result) {
+		return 'There is no data, please run some rounds to collect stats.';
+	}
+
+	return `Date: ${format(parseISO(result.date), 'MM/dd/yyyy HH:mm')}; wpm: ${result.value.wpm}; cpm: ${result.value.cpm}.`;
+};
+
 const getResultByWordCount = ({wordCount}) => {
 	const sortedByWpmResults = getResults({sortBy: '-wpm', showAll: true});
 	return sortedByWpmResults.find(result => result.wordCount === wordCount);
@@ -267,6 +276,7 @@ export {
 	getRemainingPart,
 	getResults,
 	getBestResult,
+	getBestResultCompactString,
 	getBestFrames,
 	getOpponentFrames,
 	getResultByWordCount,

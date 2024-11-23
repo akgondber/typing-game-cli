@@ -1,7 +1,7 @@
 {
 	"name": "typing-game-cli",
 	"description": "Command line game to practice your typing speed by competing against typer-robot or against your best result",
-	"version": "4.0.0",
+	"version": "5.0.0",
 	"homepage": "https://github.com/akgondber/typing-game-cli",
 	"repository": "akgondber/typing-game-cli",
 	"author": "Rushan Alyautdinov <akgondber@gmail.com>",
@@ -19,7 +19,7 @@
 	"scripts": {
 		"build": "babel --out-dir=dist source --copy-files",
 		"dev": "babel --out-dir=dist --watch source",
-		"test": "prettier --check . && xo && ava",
+		"test": "prettier --check . && xo && loadr -- ava",
 		"justtest": "ava --serial",
 		"lint": "xo",
 		"go": "node dist/cli.js",
@@ -50,13 +50,14 @@
 	},
 	"devDependencies": {
 		"@babel/cli": "^7.22.5",
-		"@babel/preset-react": "^7.22.5",
+		"@babel/preset-react": "^7.25.9",
 		"ava": "^6.1.2",
 		"eslint-config-xo-react": "^0.27.0",
 		"eslint-plugin-react": "^7.34.1",
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"import-jsx": "^5.0.0",
 		"ink-testing-library": "^3.0.0",
+		"loadr": "^0.1.1",
 		"prettier": "^3.2.5",
 		"xo": "^0.58.0"
 	},
@@ -66,7 +67,8 @@
 		},
 		"nodeArguments": [
 			"--loader=import-jsx"
-		]
+		],
+		"timeout": "20s"
 	},
 	"xo": {
 		"extends": "xo-react",

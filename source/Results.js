@@ -2,11 +2,20 @@ import React from 'react';
 import {Text, Box} from 'ink';
 import {nanoid} from 'nanoid';
 import {format, parseISO} from 'date-fns';
-import {getResults, getSortedByString} from './helpers.js';
+import {
+	getBestResultCompactString,
+	getResults,
+	getSortedByString,
+} from './helpers.js';
 import Menu from './Menu.js';
 
-export default function Results({sortBy, isShowAllHistory}) {
-	return (
+export default function Results({sortBy, isShowAllHistory, isCompactFormat}) {
+	return isCompactFormat ? (
+		<Box flexDirection="column" justifyContent="center" paddingX={1}>
+			<Text>{` ${getBestResultCompactString()}`}</Text>
+			<Menu />
+		</Box>
+	) : (
 		<Box flexDirection="column">
 			<Box
 				flexDirection="row"

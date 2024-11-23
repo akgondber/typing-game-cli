@@ -84,6 +84,7 @@ export default function App({
 	displayResults = false,
 	sortBy,
 	isShowAllHistory,
+	isCompactFormat,
 	isCompetingAgainstBestResult,
 }) {
 	const snap = useSnapshot(state);
@@ -284,7 +285,13 @@ export default function App({
 	);
 
 	if (snap.status === 'RESULTS') {
-		return <Results sortBy={sortBy} isShowAllHistory={isShowAllHistory} />;
+		return (
+			<Results
+				sortBy={sortBy}
+				isShowAllHistory={isShowAllHistory}
+				isCompactFormat={isCompactFormat}
+			/>
+		);
 	}
 
 	return snap.status === 'PAUSED' ? (
