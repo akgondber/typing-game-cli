@@ -103,6 +103,11 @@ const cli = meow(
 				aliases: ['best', 'myBest', 'myself', 'againstMyBestResult'],
 				default: false,
 			},
+			compactResult: {
+				type: 'boolean',
+				aliases: ['cmpc'],
+				default: false,
+			},
 		},
 	},
 );
@@ -119,7 +124,8 @@ const robotLevel = compose(
 	flags => filter(flags, (_, value) => value),
 	flags => Object.keys(flags)[0] || 'medium',
 )(cli.flags);
-const {displayResults, sortBy, showAllHistory, againstMyBest} = cli.flags;
+const {displayResults, sortBy, showAllHistory, againstMyBest, compactResult} =
+	cli.flags;
 
 render(
 	<App
@@ -128,6 +134,7 @@ render(
 		sortBy={sortBy}
 		isShowAllHistory={showAllHistory}
 		isCompetingAgainstBestResult={againstMyBest}
+		isCompactFormat={compactResult}
 	/>,
 );
 

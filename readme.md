@@ -30,6 +30,7 @@ $ npm install --global typing-game-cli
     --display-results Show cpm and wpm results
     --sort-by         Sort results by specified value (-cpm, cpm, -wpm, wpm, -date, date), Starting "-" indicates descending order, default is "-date"
     --all-hostory     Show all history when displaying results (otherwise (default) display last 10 results respecting sorting parameter)
+    --compact-result  Display top result in compact format
 
   Short flags and aliases for options:
     --against-my-best:  -b, --best, --my-best, --myself, --against-my-best-result
@@ -41,6 +42,7 @@ $ npm install --global typing-game-cli
     --sort-by           -s
     --show-all-history: -a, --all, --all-history
     --clear-results:    -c, --clear
+    --compact-result    --cmpc
 
 
   Examples
