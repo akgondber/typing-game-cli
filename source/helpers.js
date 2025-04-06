@@ -3,6 +3,7 @@ import path from 'node:path';
 import {fileURLToPath} from 'node:url';
 import {fdir as Fdir} from 'fdir';
 import random from 'just-random';
+import compose from 'just-compose';
 import sortBy from 'just-sort-by';
 import {format, formatISO, isValid, parseISO} from 'date-fns';
 import Config from './config.js';
@@ -22,6 +23,20 @@ const files = new Fdir()
 	.withFullPaths()
 	.crawl(sourcesPath)
 	.sync();
+
+const getFilesByTopic = topic => {
+	return new Fdir()
+		.filter((path, _isDirectory) => path.endsWith('.json'))
+		.withFullPaths()
+		.crawl(path.join(sourcesPath, topic))
+		.sync();
+};
+
+const readFile = file => fs.readFileSync(file, 'utf8');
+
+const getSuiteByTopic = topic => {
+	return compose(getFilesByTopic, random, readFile, JSON.parse)(topic);
+};
 
 const getDefaultSuite = () => {
 	return JSON.parse(fs.readFileSync(random(files), 'utf8'));
@@ -147,7 +162,7 @@ const getRemainingPart = (source, typed, hasErroredPart = false) => {
 	return source.slice(typed.length + increment);
 };
 
-const getResults = ({sortBy: sortByValue = '-wpm', showAll = false}) => {
+const getResults = ({sortBy: sortByValue = '-wpm', showAll = false, topN}) => {
 	const config = new Config();
 	const data = config.get();
 
@@ -182,7 +197,7 @@ const getResults = ({sortBy: sortByValue = '-wpm', showAll = false}) => {
 	});
 
 	if (!showAll) {
-		return result.slice(0, 10);
+		return result.slice(0, topN === undefined ? 10 : topN);
 	}
 
 	return result;
@@ -283,6 +298,7 @@ export {
 	getBestWpmResult,
 	getSortedByString,
 	getWordCount,
+	getSuiteByTopic,
 	registerResult,
 	registerBestFrames,
 };

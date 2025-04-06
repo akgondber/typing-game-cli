@@ -108,6 +108,14 @@ const cli = meow(
 				aliases: ['cmpc'],
 				default: false,
 			},
+			topN: {
+				type: 'number',
+				aliases: ['top'],
+			},
+			topic: {
+				type: 'string',
+				aliases: ['author'],
+			},
 		},
 	},
 );
@@ -124,8 +132,15 @@ const robotLevel = compose(
 	flags => filter(flags, (_, value) => value),
 	flags => Object.keys(flags)[0] || 'medium',
 )(cli.flags);
-const {displayResults, sortBy, showAllHistory, againstMyBest, compactResult} =
-	cli.flags;
+const {
+	displayResults,
+	sortBy,
+	showAllHistory,
+	againstMyBest,
+	compactResult,
+	topN,
+	topic,
+} = cli.flags;
 
 render(
 	<App
@@ -135,6 +150,8 @@ render(
 		isShowAllHistory={showAllHistory}
 		isCompetingAgainstBestResult={againstMyBest}
 		isCompactFormat={compactResult}
+		topN={topN}
+		topic={topic}
 	/>,
 );
 
