@@ -28,6 +28,7 @@ import {
 	registerBestFrames,
 	getBestFrames,
 	getOpponentFrames,
+	getSuiteByTopic,
 } from './helpers.js';
 import {optionKeyColor} from './constants.js';
 import Results from './Results.js';
@@ -39,6 +40,7 @@ const currentTime = () => Date.now();
 
 const state = proxy({
 	status: 'PAUSED',
+	topic: null,
 	suite: getDefaultSuite(),
 	source: null,
 	firstPart: '',
@@ -77,15 +79,18 @@ const state = proxy({
 	timerVisibilityCounter: 0,
 	isAnimatingEnd: false,
 	showGameResult: false,
+	topN: undefined,
 });
 
 export default function App({
 	robotLevel,
+	topic,
 	displayResults = false,
 	sortBy,
 	isShowAllHistory,
 	isCompactFormat,
 	isCompetingAgainstBestResult,
+	topN,
 }) {
 	const snap = useSnapshot(state);
 	const {stdout} = useStdout();
@@ -99,7 +104,16 @@ export default function App({
 		if (isCompetingAgainstBestResult) {
 			state.isAgainstMyselft = true;
 		}
-	}, [displayResults, isCompetingAgainstBestResult]);
+
+		if (topN) {
+			state.topN = topN;
+		}
+
+		if (topic) {
+			state.topic = topic;
+			state.suite = getSuiteByTopic(topic);
+		}
+	}, [displayResults, isCompetingAgainstBestResult, topN, topic]);
 
 	useInput(
 		(input, key) => {
@@ -290,6 +304,7 @@ export default function App({
 				sortBy={sortBy}
 				isShowAllHistory={isShowAllHistory}
 				isCompactFormat={isCompactFormat}
+				topN={topN}
 			/>
 		);
 	}

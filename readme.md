@@ -31,6 +31,8 @@ $ npm install --global typing-game-cli
     --sort-by         Sort results by specified value (-cpm, cpm, -wpm, wpm, -date, date), Starting "-" indicates descending order, default is "-date"
     --all-hostory     Show all history when displaying results (otherwise (default) display last 10 results respecting sorting parameter)
     --compact-result  Display top result in compact format
+    --topic           Use sentences from works written by specified author
+    --top-n           Display top n results when `--display-results` is being used
 
   Short flags and aliases for options:
     --against-my-best:  -b, --best, --my-best, --myself, --against-my-best-result
@@ -43,6 +45,8 @@ $ npm install --global typing-game-cli
     --show-all-history: -a, --all, --all-history
     --clear-results:    -c, --clear
     --compact-result    --cmpc
+    --topic             --author
+    --top-n             --top
 
 
   Examples
@@ -54,11 +58,14 @@ $ npm install --global typing-game-cli
     $ typing-game-cli -m
     $ typing-game-cli --low
     $ typing-game-cli --display-results
+    $ typing-game-cli --display-results --top 3
     $ typing-game-cli -r
     $ typing-game-cli -r --sort-by="-wpm"
     $ typing-game-cli -r -s="wpm"
     $ typing-game-cli -r -s="-wpm" --all-history
     $ typing-game-cli -r -s="-wpm" -a
+    $ typing-game-cli --topic ambrose-bierce
+    $ typing-game-cli --author mark-twain
 ```
 
 ## Demo
@@ -92,6 +99,10 @@ $ tgc -b
 #### Example - Game over
 
 ![](media/competition-against-best-result-2.png)
+
+#### Example - Display top n results
+
+![](media/display-top-n-results.png)
 
 ## License
 

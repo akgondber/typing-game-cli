@@ -9,7 +9,12 @@ import {
 } from './helpers.js';
 import Menu from './Menu.js';
 
-export default function Results({sortBy, isShowAllHistory, isCompactFormat}) {
+export default function Results({
+	sortBy,
+	isShowAllHistory,
+	isCompactFormat,
+	topN,
+}) {
 	return isCompactFormat ? (
 		<Box flexDirection="column" justifyContent="center" paddingX={1}>
 			<Text>{` ${getBestResultCompactString()}`}</Text>
@@ -28,7 +33,7 @@ export default function Results({sortBy, isShowAllHistory, isCompactFormat}) {
 						<Text>Top results</Text>
 					</Box>
 					<Box flexDirection="column">
-						{getResults({sortBy: '-cpm', showAll: false}).map(
+						{getResults({sortBy: '-cpm', showAll: false, topN}).map(
 							(result, i, array) => (
 								<Box
 									key={nanoid()}

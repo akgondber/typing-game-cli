@@ -27,6 +27,8 @@ const cli = meow(
 		  --display-results Show cpm and wpm results
 		  --sort-by         Sort results by specified value (-cpm, cpm, -wpm, wpm, -date, date), Starting "-" indicates descending order, default is "-date"
 		  --all-history     Show all history when displaying results (otherwise (default) display last 10 results respecting sorting parameter)
+		  --topic           Use sentences from works written by specified author
+	      --top-n           Display top n results in displaying results mode
 
 		Short flags and aliases for options:
 		  --against-my-best:  -b, --best, --my-best, --myself, --against-my-best-result
@@ -38,6 +40,8 @@ const cli = meow(
 		  --sort-by           -s
 		  --show-all-history: -a, --all, --all-history
 		  --clear-results:    -c, --clear
+		  --topic:            --author
+		  --top-n:            --top
 
 
 		Examples
@@ -49,11 +53,14 @@ const cli = meow(
 		  $ typing-game-cli -m
 		  $ typing-game-cli --low
 		  $ typing-game-cli --display-results
+		  $ typing-game-cli --display-results --top 5
 		  $ typing-game-cli -r
 		  $ typing-game-cli -r --sort-by="-wpm"
 		  $ typing-game-cli -r -s="wpm"
 		  $ typing-game-cli -r -s="-wpm" --all-history
 		  $ typing-game-cli -r -s="-wpm" -a
+		  $ typing-game-cli --topic mark-twain
+		  $ typing-game-cli --author ambrose-bierce
 	`,
 	{
 		importMeta: import.meta,
@@ -108,6 +115,14 @@ const cli = meow(
 				aliases: ['cmpc'],
 				default: false,
 			},
+			topN: {
+				type: 'number',
+				aliases: ['top'],
+			},
+			topic: {
+				type: 'string',
+				aliases: ['author'],
+			},
 		},
 	},
 );
@@ -124,8 +139,15 @@ const robotLevel = compose(
 	flags => filter(flags, (_, value) => value),
 	flags => Object.keys(flags)[0] || 'medium',
 )(cli.flags);
-const {displayResults, sortBy, showAllHistory, againstMyBest, compactResult} =
-	cli.flags;
+const {
+	displayResults,
+	sortBy,
+	showAllHistory,
+	againstMyBest,
+	compactResult,
+	topN,
+	topic,
+} = cli.flags;
 
 render(
 	<App
@@ -135,6 +157,8 @@ render(
 		isShowAllHistory={showAllHistory}
 		isCompetingAgainstBestResult={againstMyBest}
 		isCompactFormat={compactResult}
+		topN={topN}
+		topic={topic}
 	/>,
 );
 
