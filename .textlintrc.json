@@ -1,0 +1,10 @@
+{
+	"plugins": {},
+	"filters": {},
+	"rules": {
+		"doubled-spaces": true,
+		"no-dead-link": {
+			"ignoreRedirects": true
+		}
+	}
+}
