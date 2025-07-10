@@ -1,7 +1,7 @@
 {
 	"name": "typing-game-cli",
 	"description": "Command line game to practice your typing speed by competing against typer-robot or against your best result",
-	"version": "6.0.0",
+	"version": "6.1.0",
 	"homepage": "https://github.com/akgondber/typing-game-cli",
 	"repository": "akgondber/typing-game-cli",
 	"author": "Rushan Alyautdinov <akgondber@gmail.com>",
