@@ -8,6 +8,7 @@ import sortBy from 'just-sort-by';
 import {format, formatISO, isValid, parseISO} from 'date-fns';
 import Config from './config.js';
 import {frames} from './robotFrames.js';
+import {defaultHandicapCount, numerics} from './constants.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -47,6 +48,86 @@ const getStatusVariant = status => {
 	if (isLost(status)) return 'error';
 
 	return '';
+};
+
+const getSentencesSkippingWords = (sentences, wordCountToSkip) => {
+	if (wordCountToSkip > 0) {
+		let previousSpace = false;
+		let sliceStart = 0;
+		let counter = 0;
+		let i = 0;
+
+		for (const ch of sentences) {
+			if (ch === ' ') {
+				if (previousSpace) {
+					sliceStart = i;
+				} else {
+					sliceStart = i;
+					previousSpace = true;
+					counter++;
+				}
+			} else {
+				previousSpace &&= false;
+
+				if (wordCountToSkip === counter) {
+					sliceStart = i;
+					break;
+				}
+			}
+
+			i++;
+		}
+
+		return sentences.slice(sliceStart);
+	}
+
+	return sentences;
+};
+
+const getHaLeft = (sentences, wordCountToSkip) => {
+	if (wordCountToSkip > 0) {
+		let previousSpace = false;
+		let sliceStart = 0;
+		let counter = 0;
+		let i = 0;
+
+		for (const ch of sentences) {
+			if (ch === ' ') {
+				if (previousSpace) {
+					sliceStart = i;
+				} else {
+					sliceStart = i;
+					previousSpace = true;
+					counter++;
+				}
+			} else {
+				previousSpace &&= false;
+
+				if (wordCountToSkip === counter) {
+					sliceStart = i;
+					break;
+				}
+			}
+
+			i++;
+		}
+
+		return sentences.slice(0, sliceStart > 0 ? sliceStart : 56);
+	}
+
+	return '';
+};
+
+const getHaCount = (value, inputValue) => {
+	if (inputValue !== undefined && inputValue !== '') {
+		return Number(inputValue);
+	}
+
+	if (value === undefined || value === null) {
+		return defaultHandicapCount;
+	}
+
+	return value;
 };
 
 const getWpmTextColor = (wpm, otherWpm) => {
@@ -111,6 +192,14 @@ const isFinished = status => [won, lost].includes(status);
 const isWordTyped = (source, outgoing) =>
 	source.length === outgoing.length ||
 	source.slice(outgoing.length, outgoing.length + 1) === ' ';
+const isLastNumber = value => {
+	return numerics.includes(value.slice(-1));
+};
+
+const isAboutToFinish = (source, value) => {
+	return source === value;
+};
+
 const calculateWPM = (wordCount, startTime, finishTime, finished = false) => {
 	const durInMinutes = (finishTime - startTime) / 60_000;
 
@@ -274,6 +363,9 @@ const registerBestFrames = (config, frames) => {
 export {
 	getDefaultSuite,
 	getStatusVariant,
+	getSentencesSkippingWords,
+	getHaLeft,
+	getHaCount,
 	getWpmTextColor,
 	getScoreTextColor,
 	getMessage,
@@ -283,6 +375,8 @@ export {
 	getIntervalMs,
 	isFinished,
 	isWordTyped,
+	isLastNumber as isLastNum,
+	isAboutToFinish,
 	calculateWPM,
 	calculateCPS,
 	calculateCPM,

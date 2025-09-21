@@ -22,6 +22,19 @@ test('returns appropriate message when competing against robot', t => {
 	t.is(helpers.getMessage('LOST', {againstMyself: false}), 'Robot won!');
 });
 
+test('getSentenceSkippingWords returns value skipping specified word count', t => {
+	const actual = helpers.getSentencesSkippingWords(
+		'The art is being boiled.',
+		2,
+	);
+	t.is(actual, 'is being boiled.');
+});
+
+test('getHaLeft returns left side of specifed word count', t => {
+	const actual = helpers.getHaLeft('My foo bar baz quz quux murr tuzz.', 3);
+	t.is(actual, 'My foo bar ');
+});
+
 test('returns appropriate intervalMs', t => {
 	t.is(helpers.getIntervalMs('extraFast'), 200);
 	t.is(helpers.getIntervalMs('fast'), 260);

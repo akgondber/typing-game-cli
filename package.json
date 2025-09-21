@@ -26,7 +26,7 @@
 		"prettify": "prettier . --write",
 		"xofix": "xo --fix",
 		"pretcheck": "prettier --check .",
-		"telint": "textlint README.md",
+		"telint": "textlint README.md docs/demos.md",
 		"bumpp": "bumpp"
 	},
 	"files": [

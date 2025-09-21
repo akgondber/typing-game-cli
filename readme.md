@@ -27,6 +27,8 @@ $ npm install --global typing-game-cli
     --extra-fast      Start a round with a robot having extra high typing speed.
     --medium          Start a round with a robot having medium typing speed.
     --low             Start a round with a robot having low typing speed.
+    --handicap        Start a round with handicap given by opponent to you by specified count of chars
+		--handicap-count  How many chars you wish to ask from opponent
     --display-results Show cpm and wpm results
     --sort-by         Sort results by specified value (-cpm, cpm, -wpm, wpm, -date, date), Starting "-" indicates descending order, default is "-date"
     --all-hostory     Show all history when displaying results (otherwise (default) display last 10 results respecting sorting parameter)
@@ -71,6 +73,8 @@ $ npm install --global typing-game-cli
 ## Demo
 
 ![](media/demo.gif)
+
+[More demos](docs/demos.md)
 
 ## Screenshots
 

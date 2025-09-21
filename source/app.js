@@ -1,5 +1,5 @@
 import React, {useLayoutEffect} from 'react';
-import {Text, Box, useInput, useStdout, useApp} from 'ink';
+import {Text, Box, useInput, useStdout, useApp, Newline} from 'ink';
 import TextInput from 'ink-text-input-2';
 import {Spinner, Alert} from '@inkjs/ui';
 import chalk from 'chalk';
@@ -10,6 +10,7 @@ import {formatISO} from 'date-fns';
 import {
 	getBorderColor,
 	getDefaultSuite,
+	getHaLeft,
 	getRobotBorderColor,
 	getStatusVariant,
 	getMessageOrPlaceholder,
@@ -29,8 +30,10 @@ import {
 	getBestFrames,
 	getOpponentFrames,
 	getSuiteByTopic,
+	getHaCount,
+	isLastNum,
 } from './helpers.js';
-import {optionKeyColor} from './constants.js';
+import {maxHandicapCount, numerics, optionKeyColor} from './constants.js';
 import Results from './Results.js';
 import {config} from './config.js';
 import Menu from './Menu.js';
@@ -58,6 +61,10 @@ const state = proxy({
 	robotCharCount: 0,
 	robotText: '',
 	userText: '',
+	printedByUserText: '',
+	handicap: false,
+	handicapCount: 0,
+	inputHandicapCount: '',
 	usingBestResult: false,
 	isAgainstMyselft: false,
 	nextAndRemaining: '',
@@ -67,6 +74,7 @@ const state = proxy({
 	cpm: 0,
 	robotWpm: 0,
 	robotCpm: 0,
+	handicappedWpm: 0,
 	cps: 0,
 	robotCps: 0,
 	bestRslt: null,
@@ -85,6 +93,8 @@ const state = proxy({
 export default function App({
 	robotLevel,
 	topic,
+	handicap,
+	handicapCount,
 	displayResults = false,
 	sortBy,
 	isShowAllHistory,
@@ -99,6 +109,8 @@ export default function App({
 	useLayoutEffect(() => {
 		if (displayResults) {
 			state.status = 'RESULTS';
+		} else if (handicap && handicapCount > maxHandicapCount) {
+			state.status = 'QUESTION';
 		}
 
 		if (isCompetingAgainstBestResult) {
@@ -113,10 +125,31 @@ export default function App({
 			state.topic = topic;
 			state.suite = getSuiteByTopic(topic);
 		}
-	}, [displayResults, isCompetingAgainstBestResult, topN, topic]);
+	}, [
+		displayResults,
+		isCompetingAgainstBestResult,
+		topN,
+		topic,
+		handicap,
+		handicapCount,
+	]);
 
 	useInput(
 		(input, key) => {
+			if (state.status === 'QUESTION') {
+				if (numerics.includes(input)) {
+					state.inputHandicapCount += input;
+				} else if (key.backspace) {
+					if (state.inputHandicapCount.length > 0) {
+						state.inputHandicapCount = state.inputHandicapCount.slice(0, -1);
+					}
+				} else if (key.return) {
+					state.status = 'PAUSED';
+				}
+
+				return;
+			}
+
 			if (input === 'y') {
 				const foundBestResult = getBestResult();
 				if (foundBestResult) {
@@ -138,10 +171,22 @@ export default function App({
 					state.usingBestResult = false;
 				}
 
-				state.userText = '';
+				const currentRoundSentences = random(state.suite.sentences);
+				const currentHaCount = getHaCount(
+					handicapCount,
+					state.inputHandicapCount,
+				);
+				const initFirstPart = handicap
+					? getHaLeft(currentRoundSentences, currentHaCount)
+					: '';
+
+				state.userText = initFirstPart;
+				state.printedByUserText = '';
+				state.handicap = handicap;
+				state.handicapCount = currentHaCount;
 				state.robotText = '';
-				state.source = random(state.suite.sentences);
-				state.firstPart = '';
+				state.source = currentRoundSentences;
+				state.firstPart = initFirstPart;
 				state.highlightedPart = '';
 				state.erroredPart = '';
 				state.startTime = currentTime();
@@ -150,6 +195,7 @@ export default function App({
 				state.robotWordCount = 0;
 				state.wpm = 0;
 				state.cpm = 0;
+				state.charCount = 0;
 				state.robotWpm = 0;
 				state.robotCpm = 0;
 				state.frms = [];
@@ -172,11 +218,7 @@ export default function App({
 					const passedMs = now - state.startTime;
 
 					if (!isFinished) {
-						state.cpm = calculateCPM(
-							state.userText.length,
-							state.startTime,
-							now,
-						);
+						state.cpm = calculateCPM(state.charCount, state.startTime, now);
 						state.robotWpm = calculateWPM(
 							state.robotWordCount,
 							state.startTime,
@@ -261,6 +303,7 @@ export default function App({
 
 							state.isAnimatingEnd = true;
 							state.gameOver = true;
+							state.showGameResult = true;
 							clearInterval(interval);
 							const animatingInterval = setInterval(() => {
 								state.showGameResult = !state.showGameResult;
@@ -297,6 +340,36 @@ export default function App({
 			isActive: state.status !== 'RESULTS' && state.status !== 'RUNNING',
 		},
 	);
+	if (snap.status === 'QUESTION') {
+		return (
+			<Text>
+				Handicap count was exceeded max value ({maxHandicapCount}), please
+				specify another one.
+				<Newline />
+				<TextInput
+					value={snap.inputHandicapCount}
+					onChange={value => {
+						if (isLastNum(value)) {
+							state.inputHandicapCount = value;
+							state.handicapCount = Number(value);
+						}
+					}}
+				/>
+				{/* {snap.inputHandicapCount === '' ? (
+					<TextInput
+						value={snap.inputHandicapCount}
+						onChange={value => {
+							if (isLastNum(value)) {
+								state.inputHandicapCount = value;
+							}
+						}}
+					/>
+				) : (
+					<Text>{snap.inputHandicapCount}</Text>
+				)} */}
+			</Text>
+		);
+	}
 
 	if (snap.status === 'RESULTS') {
 		return (
@@ -437,7 +510,7 @@ export default function App({
 						<Text>You</Text>
 					</Box>
 					<Box
-						width="98%"
+						width="97%"
 						borderStyle="single"
 						borderColor={getBorderColor(snap.status)}
 					>
@@ -450,12 +523,18 @@ export default function App({
 									if (snap.source.indexOf(value) === 0) {
 										if (snap.userText.length < value.length) {
 											const now = currentTime();
+											const actualPrinted = state.handicap
+												? value.slice(
+														getHaLeft(state.source, state.handicapCount).length,
+													)
+												: value;
 											state.firstPart = value;
 											state.erroredPart = '';
 											state.userText = value;
-											state.charCount++;
+											state.printedByUserText = actualPrinted;
+											state.charCount = actualPrinted.length;
 											state.cps = calculateCPS(
-												value.length,
+												actualPrinted.length,
 												snap.startTime,
 												now,
 											);
@@ -465,6 +544,12 @@ export default function App({
 												state.wordCount = newWordCount;
 												state.wpm = calculateWPM(
 													newWordCount,
+													snap.startTime,
+													now,
+													snap.source === value,
+												);
+												state.handicappedWpm = calculateWPM(
+													newWordCount + snap.handicapCount,
 													snap.startTime,
 													now,
 													snap.source === value,
@@ -481,12 +566,10 @@ export default function App({
 												state.status = 'WON';
 												state.finishTime = now;
 												state.cpm = calculateCPM(
-													value.length,
+													actualPrinted.length,
 													snap.startTime,
 													now,
 												);
-
-												// RegisterBestFrames(config, state.frms);
 
 												registerResult(config, new Date(), {
 													wpm: state.wpm,
@@ -517,6 +600,13 @@ export default function App({
 						<Text color={getWpmTextColor(snap.wpm, snap.robotWpm)}>
 							WPM: {snap.wpm}
 						</Text>
+						{snap.handicap && <Text> (W. handicap </Text>}
+						{snap.handicap && (
+							<Text color={getWpmTextColor(snap.handicappedWpm, snap.robotWpm)}>
+								WPM: {snap.handicappedWpm}
+							</Text>
+						)}
+						{snap.handicap && <Text>)</Text>}
 					</Box>
 				</Box>
 				<Box
@@ -529,7 +619,7 @@ export default function App({
 						<Text>{snap.usingBestResult ? 'Your best result' : 'Robot'}</Text>
 					</Box>
 					<Box
-						width="98%"
+						width="97%"
 						borderStyle="single"
 						borderColor={getRobotBorderColor(snap.status)}
 						flexDirection="column"

@@ -24,6 +24,8 @@ const cli = meow(
 		  --extra-fast      Start a round with a robot having extra high typing speed.
 		  --medium          Start a round with a robot having medium typing speed.
 		  --low             Start a round with a robot having low typing speed.
+		  --handicap        Start a round with handicap given by opponent to you by specified count of chars
+		  --handicap-count  How many chars you wish to ask from opponent
 		  --display-results Show cpm and wpm results
 		  --sort-by         Sort results by specified value (-cpm, cpm, -wpm, wpm, -date, date), Starting "-" indicates descending order, default is "-date"
 		  --all-history     Show all history when displaying results (otherwise (default) display last 10 results respecting sorting parameter)
@@ -40,8 +42,10 @@ const cli = meow(
 		  --sort-by           -s
 		  --show-all-history: -a, --all, --all-history
 		  --clear-results:    -c, --clear
-		  --topic:            --author
+		  --topic:            -t, --author, --tpc
 		  --top-n:            --top
+		  --handicap          --ha, --hndcp, --hdc, --han
+		  --handicap-count    --hanco, --hanCo, --hndco, --haco
 
 
 		Examples
@@ -60,7 +64,7 @@ const cli = meow(
 		  $ typing-game-cli -r -s="-wpm" --all-history
 		  $ typing-game-cli -r -s="-wpm" -a
 		  $ typing-game-cli --topic mark-twain
-		  $ typing-game-cli --author ambrose-bierce
+		  $ typing-game-cli --topic ambrose-bierce
 	`,
 	{
 		importMeta: import.meta,
@@ -81,6 +85,14 @@ const cli = meow(
 			low: {
 				type: 'boolean',
 				shortFlag: 'l',
+			},
+			handicap: {
+				type: 'boolean',
+				aliases: ['hndcp', 'hdc', 'han', 'ha'],
+			},
+			handicapCount: {
+				type: 'number',
+				aliases: ['hanco', 'hanCo', 'hndco', 'haco'],
 			},
 			displayResults: {
 				type: 'boolean',
@@ -121,7 +133,8 @@ const cli = meow(
 			},
 			topic: {
 				type: 'string',
-				aliases: ['author'],
+				shortFlag: 't',
+				aliases: ['author', 'tpc'],
 			},
 		},
 	},
@@ -140,6 +153,8 @@ const robotLevel = compose(
 	flags => Object.keys(flags)[0] || 'medium',
 )(cli.flags);
 const {
+	handicap,
+	handicapCount,
 	displayResults,
 	sortBy,
 	showAllHistory,
@@ -149,9 +164,12 @@ const {
 	topic,
 } = cli.flags;
 
+console.clear();
 render(
 	<App
 		robotLevel={robotLevel}
+		handicap={handicap}
+		handicapCount={handicapCount}
 		displayResults={displayResults}
 		sortBy={sortBy}
 		isShowAllHistory={showAllHistory}
