@@ -28,13 +28,15 @@ $ npm install --global typing-game-cli
     --medium          Start a round with a robot having medium typing speed.
     --low             Start a round with a robot having low typing speed.
     --handicap        Start a round with handicap given by opponent to you by specified count of chars
-		--handicap-count  How many chars you wish to ask from opponent
+    --handicap-count  How many chars you wish to ask from opponent
     --display-results Show cpm and wpm results
     --sort-by         Sort results by specified value (-cpm, cpm, -wpm, wpm, -date, date), Starting "-" indicates descending order, default is "-date"
     --all-hostory     Show all history when displaying results (otherwise (default) display last 10 results respecting sorting parameter)
     --compact-result  Display top result in compact format
     --topic           Use sentences from works written by specified author
     --top-n           Display top n results when `--display-results` is being used
+    --set-goal        Set a goal (in wpm) that you wish to achieve
+    --goal-achieved   Let you know whether a goal was achieved
 
   Short flags and aliases for options:
     --against-my-best:  -b, --best, --my-best, --myself, --against-my-best-result
@@ -49,6 +51,10 @@ $ npm install --global typing-game-cli
     --compact-result    --cmpc
     --topic             --author
     --top-n             --top
+    --handicap          --ha, --hndcp, --hdc, --han
+    --handicap-count    --hanco, --hanCo, --hndco, --haco
+    --set-goal          --sgoal, --goal
+    --goal-achieved     --goalach, --coolprogress, --progone, --goaldone, --aic
 
 
   Examples

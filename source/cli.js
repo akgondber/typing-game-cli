@@ -7,6 +7,7 @@ import compose from 'just-compose';
 import filter from 'just-filter-object';
 import App from './app.js';
 import {config} from './config.js';
+import {getBestWpmResult, getGoal, wasGoalAchieved} from './helpers.js';
 
 const cli = meow(
 	`
@@ -31,6 +32,8 @@ const cli = meow(
 		  --all-history     Show all history when displaying results (otherwise (default) display last 10 results respecting sorting parameter)
 		  --topic           Use sentences from works written by specified author
 	      --top-n           Display top n results in displaying results mode
+		  --set-goal        Set a goal (in wpm) that you wish to achieve
+		  --goal-achieved   Let you know whether a goal was achieved
 
 		Short flags and aliases for options:
 		  --against-my-best:  -b, --best, --my-best, --myself, --against-my-best-result
@@ -46,6 +49,8 @@ const cli = meow(
 		  --top-n:            --top
 		  --handicap          --ha, --hndcp, --hdc, --han
 		  --handicap-count    --hanco, --hanCo, --hndco, --haco
+		  --set-goal          --sgoal, --goal
+		  --goal-achieved     --goalach, --coolprogress, --progone, --goaldone, --aic
 
 
 		Examples
@@ -65,6 +70,9 @@ const cli = meow(
 		  $ typing-game-cli -r -s="-wpm" -a
 		  $ typing-game-cli --topic mark-twain
 		  $ typing-game-cli --topic ambrose-bierce
+		  $ typing-game-cli --set-goal 60
+		  $ typing-game-cli --goal 60
+		  $ typing-game-cli --goal-achieved
 	`,
 	{
 		importMeta: import.meta,
@@ -93,6 +101,21 @@ const cli = meow(
 			handicapCount: {
 				type: 'number',
 				aliases: ['hanco', 'hanCo', 'hndco', 'haco'],
+			},
+			setGoal: {
+				type: 'string',
+				aliases: ['sgoal', 'goal'],
+			},
+			goalAchieved: {
+				type: 'boolean',
+				aliases: [
+					'goalach',
+					'coolprogress',
+					'progrone',
+					'progone',
+					'goaldone',
+					'aic',
+				],
 			},
 			displayResults: {
 				type: 'boolean',
@@ -144,6 +167,32 @@ const exitNow = () => process.exit(); // eslint-disable-line n/prefer-global/pro
 
 if (cli.flags.clearResults) {
 	config.clearAll();
+	exitNow();
+}
+
+if (cli.flags.setGoal) {
+	config.appendGoal(cli.flags.setGoal);
+	exitNow();
+}
+
+if (cli.flags.goalAchieved) {
+	const achiemenceResult = wasGoalAchieved();
+	if (achiemenceResult === null) {
+		console.log(
+			`There are no goal yet. First set a goal by --set-goal [wpm] command`,
+		);
+	} else {
+		let messageToSay = achiemenceResult
+			? `Congrats, you have achieved your goal.`
+			: `You goal is not achieved yet.`;
+		if (!achiemenceResult) {
+			const bestResult = getBestWpmResult();
+			messageToSay += ` Best result - ${bestResult.value.wpm}, goal - ${getGoal()}. Keep trying, don't give up!`;
+		}
+
+		console.log(messageToSay);
+	}
+
 	exitNow();
 }
 

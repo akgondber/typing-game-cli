@@ -292,6 +292,27 @@ const getResults = ({sortBy: sortByValue = '-wpm', showAll = false, topN}) => {
 	return result;
 };
 
+const getGoal = () => {
+	const config = new Config();
+	const data = config.get();
+	return data.goal;
+};
+
+const wasGoalAchieved = () => {
+	const goal = getGoal();
+
+	if (goal) {
+		const bestResult = getBestWpmResult();
+		if (bestResult === undefined) {
+			return false;
+		}
+
+		return goal <= bestResult.value.wpm;
+	}
+
+	return null;
+};
+
 const getBestResult = () => {
 	const config = new Config();
 	const data = config.get();
@@ -373,6 +394,7 @@ export {
 	getBorderColor,
 	getRobotBorderColor,
 	getIntervalMs,
+	getGoal,
 	isFinished,
 	isWordTyped,
 	isLastNumber as isLastNum,
@@ -395,4 +417,5 @@ export {
 	getSuiteByTopic,
 	registerResult,
 	registerBestFrames,
+	wasGoalAchieved,
 };

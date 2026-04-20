@@ -1,6 +1,7 @@
 import fs from 'node:fs';
 import os from 'node:os';
 import {join} from 'node:path';
+import {formatISO} from 'date-fns';
 
 const defaultConfig = {};
 
@@ -33,11 +34,28 @@ export default class Config {
 		const previous = this.get();
 		const data = JSON.stringify({...previous, ...entry}, null, 4);
 
-		fs.writeFileSync(this._configFile, data, 'utf8');
+		this.persist(data);
+	}
+
+	appendGoal(wpm) {
+		const previous = this.get();
+		const currentGoals = previous.goals || [];
+		currentGoals.push({wpm, date: formatISO(new Date())});
+		const data = JSON.stringify(
+			{...previous, goals: currentGoals, goal: wpm},
+			null,
+			4,
+		);
+
+		this.persist(data);
 	}
 
 	clearAll() {
-		fs.writeFileSync(this._configFile, '{}', 'utf8');
+		this.persist('{}');
+	}
+
+	persist(data) {
+		fs.writeFileSync(this._configFile, data, 'utf8');
 	}
 }
 

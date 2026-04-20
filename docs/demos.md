@@ -4,6 +4,10 @@
 
 'X' can be high, extra hight, medium, low: to compete against fast level one would issue the following command:
 
+By default will be used medium level robot
+
+![Against default robot](typing-game-round-demo.gif)
+
 ```bash
 $ typing-game-cli --fast
 ```
@@ -57,6 +61,34 @@ $ typing-game-cli --topic mark-twain
 ```
 
 ![Using mark twain topic](../media/with-topic-mark-twain.gif)
+
+#### Dealing with goals
+
+You can set a goal you wish to achieve. The command will be the following:
+
+```bash
+$ typing-game-cli --set-goal 53
+```
+
+or shorter
+
+```bash
+$ typing-game-cli --goal 53
+```
+
+To get information whether you achieved a goal you can run:
+
+```bash
+$ typing-game-cli --goal-achieved
+```
+
+or using `goalach`, `progone`, `aic` aliases
+
+```bash
+$ typing-game-cli --aic
+```
+
+aic stands for Am I Cool?
 
 #### Other examples
 
