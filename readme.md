@@ -114,6 +114,12 @@ $ tgc -b
 
 ![](media/display-top-n-results.png)
 
+#### Useful links
+
+[How to type fast (from someone who types 145 words per minute)](https://www.reddit.com/r/productivity/comments/m40www/how_to_type_fast_from_someone_who_types_145_words/)
+[10 Tips for Improving Your Typing Speed and Accuracy](https://www.geeksforgeeks.org/blogs/tips-improving-your-typing-speed-accuracy/)
+[5 Tips for Improving Your Typing Speed & Accuracy](https://www.herzing.edu/blog/5-tips-improving-your-typing-speed-accuracy)
+
 ## License
 
 MIT © [Rushan Alyautdinov](https://github.com/akgondber)
