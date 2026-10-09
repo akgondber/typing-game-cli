@@ -31,6 +31,7 @@ const cli = meow(
 		  --sort-by         Sort results by specified value (-cpm, cpm, -wpm, wpm, -date, date), Starting "-" indicates descending order, default is "-date"
 		  --all-history     Show all history when displaying results (otherwise (default) display last 10 results respecting sorting parameter)
 		  --topic           Use sentences from works written by specified author
+		  --suite-file      Let you provide custom json file as a source
 	      --top-n           Display top n results in displaying results mode
 		  --set-goal        Set a goal (in wpm) that you wish to achieve
 		  --goal-achieved   Let you know whether a goal was achieved
@@ -46,6 +47,7 @@ const cli = meow(
 		  --show-all-history: -a, --all, --all-history
 		  --clear-results:    -c, --clear
 		  --topic:            -t, --author, --tpc
+		  --suite-file        --cufile, --customfile, --file
 		  --top-n:            --top
 		  --handicap          --ha, --hndcp, --hdc, --han
 		  --handicap-count    --hanco, --hanCo, --hndco, --haco
@@ -70,6 +72,8 @@ const cli = meow(
 		  $ typing-game-cli -r -s="-wpm" -a
 		  $ typing-game-cli --topic mark-twain
 		  $ typing-game-cli --topic ambrose-bierce
+		  $ typing-game-cli --topic philosophy
+		  $ typing-game-cli --topic quotes
 		  $ typing-game-cli --set-goal 60
 		  $ typing-game-cli --goal 60
 		  $ typing-game-cli --goal-achieved
@@ -159,6 +163,10 @@ const cli = meow(
 				shortFlag: 't',
 				aliases: ['author', 'tpc'],
 			},
+			suiteFile: {
+				type: 'string',
+				aliases: ['cufile', 'customfile', 'file'],
+			},
 		},
 	},
 );
@@ -211,6 +219,7 @@ const {
 	compactResult,
 	topN,
 	topic,
+	suiteFile,
 } = cli.flags;
 
 console.clear();
@@ -218,6 +227,7 @@ render(
 	<App
 		robotLevel={robotLevel}
 		handicap={handicap}
+		suiteFile={suiteFile}
 		handicapCount={handicapCount}
 		displayResults={displayResults}
 		sortBy={sortBy}

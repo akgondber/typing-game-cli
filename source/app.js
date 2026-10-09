@@ -7,6 +7,7 @@ import Gradient from 'ink-gradient';
 import {proxy, useSnapshot} from 'valtio';
 import random from 'just-random';
 import {formatISO} from 'date-fns';
+import compose from 'just-compose';
 import {
 	getBorderColor,
 	getDefaultSuite,
@@ -14,6 +15,7 @@ import {
 	getRobotBorderColor,
 	getStatusVariant,
 	getMessageOrPlaceholder,
+	readFile,
 	isFinished,
 	isWordTyped,
 	calculateWPM,
@@ -32,6 +34,7 @@ import {
 	getSuiteByTopic,
 	getHaCount,
 	isLastNum,
+	existsFile,
 } from './helpers.js';
 import {maxHandicapCount, numerics, optionKeyColor} from './constants.js';
 import Results from './Results.js';
@@ -44,7 +47,10 @@ const currentTime = () => Date.now();
 const state = proxy({
 	status: 'PAUSED',
 	topic: null,
+	lastProvidedTopic: null,
 	suite: getDefaultSuite(),
+	suiteFile: null,
+	lastProvidedSuiteFile: null,
 	source: null,
 	firstPart: '',
 	highlightedPart: '',
@@ -92,6 +98,7 @@ const state = proxy({
 
 export default function App({
 	robotLevel,
+	suiteFile,
 	topic,
 	handicap,
 	handicapCount,
@@ -111,6 +118,14 @@ export default function App({
 			state.status = 'RESULTS';
 		} else if (handicap && handicapCount > maxHandicapCount) {
 			state.status = 'QUESTION';
+		} else if (topic) {
+			state.topic = topic;
+			state.lastProvidedTopic = topic;
+			if (getSuiteByTopic(topic) === null) {
+				state.status = 'PROMPT_TOPIC';
+			} else {
+				state.suite = getSuiteByTopic(topic);
+			}
 		}
 
 		if (isCompetingAgainstBestResult) {
@@ -121,21 +136,53 @@ export default function App({
 			state.topN = topN;
 		}
 
-		if (topic) {
-			state.topic = topic;
-			state.suite = getSuiteByTopic(topic);
+		if (suiteFile) {
+			state.suiteFile = suiteFile;
+			state.lastProvidedSuiteFile = suiteFile;
+			if (existsFile(suiteFile)) {
+				state.suite = compose(readFile, JSON.parse)(suiteFile);
+			} else {
+				state.status = 'PROMPT_SUITE_FILE';
+			}
 		}
 	}, [
 		displayResults,
 		isCompetingAgainstBestResult,
 		topN,
 		topic,
+		suiteFile,
 		handicap,
 		handicapCount,
 	]);
 
 	useInput(
 		(input, key) => {
+			if (state.status === 'PROMPT_TOPIC') {
+				if (key.return) {
+					if (getSuiteByTopic(state.topic)) {
+						state.status = 'PAUSED';
+						state.suite = getSuiteByTopic(state.topic);
+					} else {
+						state.lastProvidedTopic = state.topic;
+					}
+				}
+
+				return;
+			}
+
+			if (state.status === 'PROMPT_SUITE_FILE') {
+				if (key.return) {
+					if (existsFile(state.suiteFile)) {
+						state.status = 'PAUSED';
+						state.suite = compose(readFile, JSON.parse)(state.suiteFile);
+					} else {
+						state.lastProvidedSuiteFile = state.suiteFile;
+					}
+				}
+
+				return;
+			}
+
 			if (state.status === 'QUESTION') {
 				if (numerics.includes(input)) {
 					state.inputHandicapCount += input;
@@ -337,9 +384,50 @@ export default function App({
 			}
 		},
 		{
-			isActive: state.status !== 'RESULTS' && state.status !== 'RUNNING',
+			isActive:
+				state.status !== 'RESULTS' &&
+				state.status !== 'RUNNING' &&
+				state.status !== 'PROMPT_TOPIC' &&
+				state.status !== 'PROMPT_SUITE_FILE',
 		},
 	);
+	if (snap.status === 'PROMPT_TOPIC') {
+		return (
+			<Text>
+				There are no sources for specified topic &quot;{snap.lastProvidedTopic}
+				&quot;. Please change topic option.
+				<Newline />
+				Topic:{' '}
+				<Text color="cyan">
+					<TextInput
+						value={snap.topic}
+						onChange={value => {
+							state.topic = value;
+						}}
+					/>
+				</Text>
+			</Text>
+		);
+	}
+
+	if (snap.status === 'PROMPT_SUITE_FILE') {
+		return (
+			<Text>
+				There is no file &quot;{snap.suiteFile}&quot;. Please change file path.
+				<Newline />
+				Suite file :{' '}
+				<Text color="cyan">
+					<TextInput
+						value={snap.suiteFile}
+						onChange={value => {
+							state.suiteFile = value;
+						}}
+					/>
+				</Text>
+			</Text>
+		);
+	}
+
 	if (snap.status === 'QUESTION') {
 		return (
 			<Text>

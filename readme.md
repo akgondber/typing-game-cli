@@ -34,6 +34,7 @@ $ npm install --global typing-game-cli
     --all-hostory     Show all history when displaying results (otherwise (default) display last 10 results respecting sorting parameter)
     --compact-result  Display top result in compact format
     --topic           Use sentences from works written by specified author
+    --suite-file      Let you provide custom json file as a source
     --top-n           Display top n results when `--display-results` is being used
     --set-goal        Set a goal (in wpm) that you wish to achieve
     --goal-achieved   Let you know whether a goal was achieved
@@ -50,6 +51,7 @@ $ npm install --global typing-game-cli
     --clear-results:    -c, --clear
     --compact-result    --cmpc
     --topic             --author
+    --suite-file        --cufile, --customfile, --file
     --top-n             --top
     --handicap          --ha, --hndcp, --hdc, --han
     --handicap-count    --hanco, --hanCo, --hndco, --haco
@@ -72,8 +74,13 @@ $ npm install --global typing-game-cli
     $ typing-game-cli -r -s="wpm"
     $ typing-game-cli -r -s="-wpm" --all-history
     $ typing-game-cli -r -s="-wpm" -a
+    $ typing-game-cli --topic mark-twain
     $ typing-game-cli --topic ambrose-bierce
-    $ typing-game-cli --author mark-twain
+    $ typing-game-cli --topic philosophy
+    $ typing-game-cli --topic quotes
+    $ typing-game-cli --set-goal 60
+    $ typing-game-cli --goal 60
+    $ typing-game-cli --goal-achieved
 ```
 
 ## Demo

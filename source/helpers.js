@@ -26,6 +26,10 @@ const files = new Fdir()
 	.sync();
 
 const getFilesByTopic = topic => {
+	if (!fs.existsSync(path.join(sourcesPath, topic))) {
+		return [];
+	}
+
 	return new Fdir()
 		.filter((path, _isDirectory) => path.endsWith('.json'))
 		.withFullPaths()
@@ -34,9 +38,14 @@ const getFilesByTopic = topic => {
 };
 
 const readFile = file => fs.readFileSync(file, 'utf8');
+const existsFile = file => fs.existsSync(file);
 
 const getSuiteByTopic = topic => {
-	return compose(getFilesByTopic, random, readFile, JSON.parse)(topic);
+	if (getFilesByTopic(topic).length > 0) {
+		return compose(getFilesByTopic, random, readFile, JSON.parse)(topic);
+	}
+
+	return null;
 };
 
 const getDefaultSuite = () => {
@@ -415,6 +424,8 @@ export {
 	getSortedByString,
 	getWordCount,
 	getSuiteByTopic,
+	readFile,
+	existsFile,
 	registerResult,
 	registerBestFrames,
 	wasGoalAchieved,

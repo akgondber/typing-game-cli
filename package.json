@@ -81,6 +81,7 @@
 		"prettier": true,
 		"rules": {
 			"react/prop-types": "off",
+			"complexity": "off",
 			"unicorn/filename-case": "off",
 			"unicorn/prefer-switch": "off"
 		}
